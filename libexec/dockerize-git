@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Usage: dockerize git user/repository[:branch] [docker_image]
+# Usage: dockerize git repo_url user/repository[:branch] [docker_image]
 #
 # Summary: Build images from git repositories
 #
@@ -57,8 +57,8 @@ then
   echo "Must specify a github user/repository"
   exit 1
 fi
-
-github_repo_name_and_branch=(${1/:/ })
+git_url=$1
+github_repo_name_and_branch=(${2/:/ })
 github_repo="${github_repo_name_and_branch[0]}"
 github_repo_branch="${github_repo_name_and_branch[1]:-master}"
 shift
@@ -68,7 +68,7 @@ cloned_repository="$DOCKER_GITHUB_REPOS/$docker_image"
 
 if [ ! -e "$cloned_repository" ]
 then
-  $__exec "git clone ${git_repo} $cloned_repository"
+  $__exec "git clone ${git_url}${github_repo} $cloned_repository"
   $__exec "cd $cloned_repository"
 else
   $__exec "cd $cloned_repository && git fetch"
